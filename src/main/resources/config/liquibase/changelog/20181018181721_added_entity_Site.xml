@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.5.xsd
+                        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <property name="now" value="now()" dbms="h2"/>
+
+    <property name="now" value="now()" dbms="mysql"/>
+    <property name="autoIncrement" value="true"/>
+
+    <property name="floatType" value="float4" dbms="postgresql, h2"/>
+    <property name="floatType" value="float" dbms="mysql, oracle, mssql"/>
+
+    <!--
+        Added the entity Site.
+    -->
+    <changeSet id="20181018181721-1" author="jhipster">
+        <createTable tableName="site">
+            <column name="id" type="bigint" autoIncrement="${autoIncrement}">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="budderfly_id" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="customer_name" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="status" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="company_type" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="store_number" type="integer">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="address" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="city" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="state" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="zip" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="billing_type" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="payment_type" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="site_type" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="owner_name" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="owner_email" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="owner_phone" type="varchar(255)">
+                <constraints nullable="false" />
+            </column>
+
+            <column name="address_1" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="address_2" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="latitude" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="longitude" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="tax_exempt" type="bit">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="roll_billing" type="bit">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="parent_site_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+
+            <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
+        </createTable>
+
+    </changeSet>
+    <changeSet id="BUD-570" author="dmaure">
+        <modifyDataType tableName="site" columnName="store_number" newDataType="varchar(255)"></modifyDataType>
+    </changeSet>
+
+    <changeSet id="BD-610" author="dmaure">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="site" columnName="budderfly_id"/>
+        </preConditions>
+        <sql>
+            DELETE s1 FROM site s1, site s2 WHERE s1.id > s2.id AND s1.budderfly_id = s2.budderfly_id;
+        </sql>
+        <addUniqueConstraint tableName="site" columnNames="budderfly_id"></addUniqueConstraint>
+    </changeSet>
+
+    <changeSet id="BD-735" author="dmaure">
+        <sql>UPDATE site s SET s.billing_type = "AMU_Forward" WHERE s.billing_type = "Forward"</sql>
+        <sql>UPDATE site s SET s.billing_type = "AMU_Arrears" WHERE s.billing_type = "Arrears_Discount"</sql>
+        <sql>UPDATE site s SET s.billing_type = "none" WHERE s.billing_type IS NULL </sql>
+    </changeSet>
+
+
+    <!-- Added the entity audit columns -->
+    <changeSet id="20190208144711-audit-1" author="jhipster-entity-audit">
+        <addColumn tableName="site">
+            <column name="created_by" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="timestamp" defaultValueDate="${now}">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_modified_by" type="varchar(50)"/>
+            <column name="last_modified_date" type="timestamp"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="BD-1087-1" author="victormedeiros">
+        <addColumn tableName="site">
+            <column name="emo_version" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="BD-1362-1" author="paulbrenner">
+        <addColumn tableName="site">
+            <column name="site_contact" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="franchise_contact" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+            <column name="billing_contact" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
+</databaseChangeLog>

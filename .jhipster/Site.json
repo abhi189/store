@@ -1,0 +1,147 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipName": "parentSite",
+            "otherEntityName": "site",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "budderflyId",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "customerName",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "status",
+            "fieldType": "SiteStatus",
+            "fieldValues": "ACTIVE,INACTIVE,PENDING",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "companyType",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "storeNumber",
+            "fieldType": "Integer"
+        },
+        {
+            "fieldName": "address",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "city",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "state",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "zip",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "billingType",
+            "fieldType": "BillingType",
+            "fieldValues": "AMU-Forward,AMU-Arrears,AME,PASSTHROUGH,LME,none",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "paymentType",
+            "fieldType": "PaymentType",
+            "fieldValues": "ETF,Check,Credit_Card",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "siteType",
+            "fieldType": "SiteType",
+            "fieldValues": "Physical,Virtual"
+        },
+        {
+            "fieldName": "ownerName",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "ownerEmail",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "ownerPhone",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "address1",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "address2",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "latitude",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "longitude",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "taxExempt",
+            "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "rollBilling",
+            "fieldType": "Boolean"
+        },
+        {
+            "fieldName": "emoVersion",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "billingContact",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "siteContact",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "franchiseContact",
+            "fieldType": "String"
+        }
+    ],
+    "changelogDate": "20181018181721",
+    "dto": "mapstruct",
+    "service": "serviceImpl",
+    "entityTableName": "site",
+    "jpaMetamodelFiltering": true,
+    "pagination": "pagination",
+    "microserviceName": "billing",
+    "searchEngine": "elasticsearch",
+    "enableEntityAudit": true
+}
