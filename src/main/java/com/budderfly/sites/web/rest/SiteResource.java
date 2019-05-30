@@ -1,6 +1,7 @@
 package com.budderfly.sites.web.rest;
 
 import com.budderfly.sites.domain.Site;
+import com.budderfly.sites.service.dto.PortalSiteDTO;
 import com.budderfly.sites.service.dto.SiteSyncDTO;
 import com.codahale.metrics.annotation.Timed;
 import com.budderfly.sites.service.SiteService;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -89,6 +91,20 @@ public class SiteResource {
         SiteDTO result = siteService.save(siteDTO);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, siteDTO.getId().toString()))
+            .body(result);
+    }
+
+    @PreAuthorize("hasPermission(#budderflyId, 'PORTAL')")
+    @PutMapping("/sites/portal/{budderflyId}")
+    public ResponseEntity<SiteDTO> updatePortalSite(@PathVariable String budderflyId, @RequestBody PortalSiteDTO portalSiteDTO){
+
+        SiteDTO site = getSite(portalSiteDTO.getId()).getBody();
+        site.setPaymentType(portalSiteDTO.getPaymentType());
+
+        SiteDTO result = siteService.save(site);
+
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, portalSiteDTO.getId().toString()))
             .body(result);
     }
 
