@@ -1,17 +1,15 @@
 package com.budderfly.sites.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import javax.validation.constraints.*;
 
 import org.springframework.data.elasticsearch.annotations.Document;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
 
 import com.budderfly.sites.domain.enumeration.SiteStatus;
@@ -27,7 +25,8 @@ import com.budderfly.sites.domain.enumeration.SiteType;
  */
 @Entity
 @Table(name = "site")
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@FilterDef(name = "SITE_FILTER", parameters = {@ParamDef(name = "siteIds", type = "string")})
+@Filter(name = "SITE_FILTER", condition = "budderfly_id IN (:siteIds)")
 @Document(indexName = "site")
 public class Site extends AbstractAuditingEntity implements Serializable {
 

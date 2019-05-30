@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.persistence.criteria.JoinType;
 
+import com.budderfly.sites.repository.SiteFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -64,6 +65,7 @@ public class SiteQueryService extends QueryService<Site> {
      * @param page The page, which should be returned.
      * @return the matching entities.
      */
+    @SiteFilter
     @Transactional(readOnly = true)
     public Page<SiteDTO> findByCriteria(SiteCriteria criteria, Pageable page) {
         log.debug("find by criteria : {}, page: {}", criteria, page);

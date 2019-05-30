@@ -75,4 +75,7 @@ public interface SiteService {
     void syncInjobsData(List<SiteSyncDTO> listSitesSync);
 
     List<SiteDTO> findSitesBySiteEmail(String email);
+
+    List<String> getShopsOwnedByUser(String login);
+
 }

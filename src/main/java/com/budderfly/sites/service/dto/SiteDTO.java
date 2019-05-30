@@ -1,4 +1,5 @@
 package com.budderfly.sites.service.dto;
+import javax.persistence.Id;
 import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
@@ -12,6 +13,7 @@ import com.budderfly.sites.domain.enumeration.SiteType;
  */
 public class SiteDTO extends AbstractAuditingDTO implements Serializable {
 
+    @Id
     private Long id;
 
     @NotNull

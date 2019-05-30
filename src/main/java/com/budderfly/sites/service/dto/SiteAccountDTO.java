@@ -1,8 +1,8 @@
 package com.budderfly.sites.service.dto;
 
+import javax.persistence.Id;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.time.Instant;
 import java.util.Objects;
 
 /**
@@ -10,6 +10,7 @@ import java.util.Objects;
  */
 public class SiteAccountDTO implements Serializable {
 
+    @Id
     private Long id;
 
     @NotNull

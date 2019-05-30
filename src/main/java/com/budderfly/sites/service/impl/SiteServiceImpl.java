@@ -1,17 +1,20 @@
 package com.budderfly.sites.service.impl;
 
+import com.budderfly.sites.client.AuthenticateClient;
+import com.budderfly.sites.client.BillingClient;
+import com.budderfly.sites.domain.Site;
 import com.budderfly.sites.domain.enumeration.BillingType;
 import com.budderfly.sites.domain.enumeration.PaymentType;
 import com.budderfly.sites.domain.enumeration.SiteStatus;
-import com.budderfly.sites.service.SiteService;
-import com.budderfly.sites.domain.Site;
+import com.budderfly.sites.repository.SiteFilter;
 import com.budderfly.sites.repository.SiteRepository;
 import com.budderfly.sites.repository.search.SiteSearchRepository;
+import com.budderfly.sites.service.SiteService;
 import com.budderfly.sites.service.dto.SiteAccountDTO;
 import com.budderfly.sites.service.dto.SiteDTO;
 import com.budderfly.sites.service.dto.SiteSyncDTO;
 import com.budderfly.sites.service.mapper.SiteMapper;
-import com.budderfly.sites.client.BillingClient;
+import com.netflix.hystrix.exception.HystrixRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -23,14 +26,14 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.Optional;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
 /**
  * Service Implementation for managing Site.
@@ -40,27 +43,23 @@ import static org.elasticsearch.index.query.QueryBuilders.*;
 public class SiteServiceImpl implements SiteService {
 
     private final Logger log = LoggerFactory.getLogger(SiteServiceImpl.class);
-
     private final SiteRepository siteRepository;
-
     private final SiteMapper siteMapper;
-
     private final SiteSearchRepository siteSearchRepository;
-
     private final BillingClient billingClient;
-
+    private final AuthenticateClient authenticateClient;
     private final ElasticsearchOperations elasticsearchTemplate;
-
     private static final Lock reindexLock = new ReentrantLock();
-
     private final Pattern VALID_BUDDERFLY_ID = Pattern.compile("^([A-Z]{2,}-[0-9]{1,})+$");
 
-    public SiteServiceImpl(SiteRepository siteRepository, SiteMapper siteMapper, SiteSearchRepository siteSearchRepository, BillingClient billingClient, ElasticsearchOperations elasticsearchTemplate) {
+    public SiteServiceImpl(SiteRepository siteRepository, SiteMapper siteMapper, SiteSearchRepository siteSearchRepository,
+                           BillingClient billingClient, ElasticsearchOperations elasticsearchTemplate, AuthenticateClient authenticateClient) {
         this.siteRepository = siteRepository;
         this.siteMapper = siteMapper;
         this.siteSearchRepository = siteSearchRepository;
         this.billingClient = billingClient;
         this.elasticsearchTemplate = elasticsearchTemplate;
+        this.authenticateClient = authenticateClient;
     }
 
     /**
@@ -100,6 +99,7 @@ public class SiteServiceImpl implements SiteService {
      */
     @Override
     @Transactional(readOnly = true)
+    @SiteFilter
     public List<SiteDTO> findAll() {
         log.debug("Request to get all Sites");
         List<SiteDTO> sites = siteMapper.toDto(siteRepository.findAll());
@@ -207,7 +207,7 @@ public class SiteServiceImpl implements SiteService {
             } else {
                 log.error("Error trying to get SitesAccounts from Billing Microservice");
             }
-        }catch(Exception e){
+        }catch (Exception e) {
             log.error("Error trying to Sync Sites: "+e.getMessage());
         }
     }
@@ -240,5 +240,12 @@ public class SiteServiceImpl implements SiteService {
             }
         });
         log.info("Sync process with injobs data finished. Synced {} sites.", sitesSynced[0]);
+    }
+
+    @Override
+    public List<String> getShopsOwnedByUser(String login) {
+        List<String> ids = authenticateClient.getShopsOwnedByUser(login);
+
+        return ids;
     }
 }
