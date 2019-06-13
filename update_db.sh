@@ -141,7 +141,7 @@ fi
 # show status
 exec 9>&1
 debug "Retrieving DB status of $1.$MYSQL_DB_NAME..."
-MVN_LIQUIBASE_OUT=$(mvn -q -Dliquibase.url="$MYSQL_URL" -Dliquibase.dbname="$MYSQL_DB_NAME" -Dliquibase.username="$MYSQL_USER" -Dliquibase.password="$MYSQL_PASS" -Dliquibase.logging=off liquibase:status | tee >(cat - >&9))
+MVN_LIQUIBASE_OUT=$(mvn -q -Dliquibase.driver="$LIQUIBASE_DRIVER" -Dliquibase.url="$MYSQL_URL" -Dliquibase.dbname="$MYSQL_DB_NAME" -Dliquibase.username="$MYSQL_USER" -Dliquibase.password="$MYSQL_PASS" -Dliquibase.logging=off liquibase:status | tee >(cat - >&9))
 if grep -qF "$MAVEN_LIQUIBASE_OK_MSG" <<<"$MVN_LIQUIBASE_OUT"; then
   debug "Nothing to do. Quitting."
   exit 0
@@ -153,7 +153,7 @@ read
 # update db
 debug "Updating DB $1.$MYSQL_DB_NAME..."
 TS_START=$(date +%s)
-mvn -q -Dliquibase.url="$MYSQL_URL" -Dliquibase.dbname="$MYSQL_DB_NAME" -Dliquibase.username="$MYSQL_USER" -Dliquibase.password="$MYSQL_PASS" -Dliquibase.logging=info liquibase:update
+mvn -q -Dliquibase.driver="$LIQUIBASE_DRIVER" -Dliquibase.url="$MYSQL_URL" -Dliquibase.dbname="$MYSQL_DB_NAME" -Dliquibase.username="$MYSQL_USER" -Dliquibase.password="$MYSQL_PASS" -Dliquibase.logging=info liquibase:update
 TS_END=$(date +%s)
 TS_DIFF=$((TS_END-TS_START))
 if [[ $? != 0 ]]; then

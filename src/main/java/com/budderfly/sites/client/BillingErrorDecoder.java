@@ -24,6 +24,7 @@ public class BillingErrorDecoder implements ErrorDecoder {
         try {
             responseBody = new String(Util.toByteArray(response.body().asInputStream()));
         } catch (IOException e) {
+            log.error(e.getMessage());
             // ignore
         }
 

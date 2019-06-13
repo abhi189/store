@@ -6,6 +6,12 @@
             "otherEntityName": "site",
             "relationshipType": "many-to-one",
             "otherEntityField": "id"
+        },
+        {
+            "relationshipName": "contact",
+            "otherEntityName": "contact",
+            "relationshipType": "one-to-many",
+            "otherEntityField": "id"
         }
     ],
     "fields": [

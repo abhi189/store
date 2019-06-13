@@ -15,4 +15,14 @@
                                  referencedTableName="site"/>
 
     </changeSet>
+
+    <changeSet id="201915597535633-3" author="jhipster">
+
+        <addForeignKeyConstraint baseColumnNames="site_contact"
+                                 baseTableName="site"
+                                 constraintName="fk_site_site_contact"
+                                 referencedColumnNames="id"
+                                 referencedTableName="contact"/>
+
+    </changeSet>
 </databaseChangeLog>

@@ -133,6 +133,7 @@ if [ "$1" = "$ENV_PROD" ]; then
   info "$(docker images | grep latest | grep amazonaws | grep sites | grep prod)"
 fi
 
+AWS_ECR_DOCKER_IMG_DIGEST=""
 debug "Login to AWS"
 login=$(aws ecr get-login --no-include-email --region us-west-2)
 eval $login
@@ -141,12 +142,23 @@ if [[ "$1" = "$ENV_QA" ]]; then
   debug "Pushing docker images to QA AWS ECR"
   docker push 181564704724.dkr.ecr.us-west-2.amazonaws.com/qa/sites:latest
   docker push 181564704724.dkr.ecr.us-west-2.amazonaws.com/qa/sites:v$2
+  AWS_ECR_DOCKER_IMG_DIGEST=$(aws ecr describe-images --repository-name qa/sites --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageDigest' | tr -d '"')
 fi
 
 if [ "$1" = "$ENV_PROD" ]; then
   debug "Pushing docker images to PROD AWS ECR"
   docker push 181564704724.dkr.ecr.us-west-2.amazonaws.com/prod/sites:latest
   docker push 181564704724.dkr.ecr.us-west-2.amazonaws.com/prod/sites:v$2
+  AWS_ECR_DOCKER_IMG_DIGEST=$(aws ecr describe-images --repository-name prod/sites --query 'sort_by(imageDetails,& imagePushedAt)[-1].imageDigest' | tr -d '"')
+fi
+
+DOCKER_IMG_DIGEST=$(docker inspect --format='{{index .RepoDigests 0}}' sites:v$2 | cut -d'@' -f2)
+debug "Validating docker images in AWS ECR"
+if [[ "$DOCKER_IMG_DIGEST" = "$AWS_ECR_DOCKER_IMG_DIGEST" ]]; then
+    debug "Docker image has been pushed successfully to AWS ECR."
+else
+    debug "$DOCKER_IMG_DIGEST == $AWS_ECR_DOCKER_IMG_DIGEST ?"
+    die "Docker image mismatch, digests don't match, please check."
 fi
 
 debug "Using $1 Kubernetes cluster"

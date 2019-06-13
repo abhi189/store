@@ -43,9 +43,11 @@ ribbon:
 feign:
     hystrix:
         enabled: true
-#    client:
-#        config:
-#            default:
+    client:
+        config:
+            default:
+                requestInterceptors:
+                    - com.budderfly.sites.client.UserFeignClientInterceptor
 #                connectTimeout: 5000
 #                readTimeout: 5000
 

@@ -162,17 +162,17 @@ public class SiteQueryService extends QueryService<Site> {
                 specification = specification.and(buildStringSpecification(criteria.getEmoVersion(), Site_.emoVersion));
             }
             if (criteria.getBillingContact() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getBillingContact(), Site_.billingContact));
-            }
-            if (criteria.getSiteContact() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getSiteContact(), Site_.siteContact));
+                specification = specification.and(buildSpecification(criteria.getBillingContact(), Site_.billingContact));
             }
             if (criteria.getFranchiseContact() != null) {
-                specification = specification.and(buildStringSpecification(criteria.getFranchiseContact(), Site_.franchiseContact));
+                specification = specification.and(buildSpecification(criteria.getFranchiseContact(), Site_.franchiseContact));
             }
             if (criteria.getParentSiteId() != null) {
                 specification = specification.and(buildSpecification(criteria.getParentSiteId(),
                     root -> root.join(Site_.parentSite, JoinType.LEFT).get(Site_.id)));
+            }
+            if (criteria.getSiteContact() != null) {
+                specification = specification.and(buildSpecification(criteria.getSiteContact(), Site_.siteContact));
             }
         }
         return specification;

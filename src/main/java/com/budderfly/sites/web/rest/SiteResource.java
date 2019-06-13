@@ -97,14 +97,14 @@ public class SiteResource {
     @PreAuthorize("hasPermission(#budderflyId, 'PORTAL')")
     @PutMapping("/sites/portal/{budderflyId}")
     public ResponseEntity<SiteDTO> updatePortalSite(@PathVariable String budderflyId, @RequestBody PortalSiteDTO portalSiteDTO){
-
-        SiteDTO site = getSite(portalSiteDTO.getId()).getBody();
+        log.debug("REST request to update for portal user site: " + budderflyId);
+        SiteDTO site = getSiteByBudderflyId(budderflyId).getBody();
         site.setPaymentType(portalSiteDTO.getPaymentType());
 
         SiteDTO result = siteService.save(site);
 
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, portalSiteDTO.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 

@@ -93,7 +93,7 @@ public class SiteCriteria implements Serializable {
 
     private StringFilter emoVersion;
 
-    private StringFilter billingContact;
+    private LongFilter billingContact;
 
     private String createdBy;
 
@@ -103,9 +103,9 @@ public class SiteCriteria implements Serializable {
 
     private Instant lastModifiedDate;
 
-    private StringFilter siteContact;
+    private LongFilter siteContact;
 
-    private StringFilter franchiseContact;
+    private LongFilter franchiseContact;
 
     private LongFilter parentSiteId;
 
@@ -295,27 +295,27 @@ public class SiteCriteria implements Serializable {
         this.emoVersion = emoVersion;
     }
 
-    public StringFilter getBillingContact() {
+    public LongFilter getBillingContact() {
         return billingContact;
     }
 
-    public void setBillingContact(StringFilter billingContact) {
+    public void setBillingContact(LongFilter billingContact) {
         this.billingContact = billingContact;
     }
 
-    public StringFilter getSiteContact() {
+    public LongFilter getSiteContact() {
         return siteContact;
     }
 
-    public void setSiteContact(StringFilter siteContact) {
+    public void setSiteContact(LongFilter siteContact) {
         this.siteContact = siteContact;
     }
 
-    public StringFilter getFranchiseContact() {
+    public LongFilter getFranchiseContact() {
         return franchiseContact;
     }
 
-    public void setFranchiseContact(StringFilter franchiseContact) {
+    public void setFranchiseContact(LongFilter franchiseContact) {
         this.franchiseContact = franchiseContact;
     }
 

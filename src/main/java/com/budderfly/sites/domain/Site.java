@@ -8,9 +8,12 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.*;
 
+import org.hibernate.annotations.Cache;
 import org.springframework.data.elasticsearch.annotations.Document;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import com.budderfly.sites.domain.enumeration.SiteStatus;
 
@@ -114,13 +117,13 @@ public class Site extends AbstractAuditingEntity implements Serializable {
     private String emoVersion;
 
     @Column(name = "billing_contact")
-    private String billingContact;
+    private Long billingContact;
 
     @Column(name = "site_contact")
-    private String siteContact;
+    private Long siteContact;
 
     @Column(name = "franchise_contact")
-    private String franchiseContact;
+    private Long franchiseContact;
 
     @ManyToOne
     @JsonIgnoreProperties("")
@@ -421,42 +424,42 @@ public class Site extends AbstractAuditingEntity implements Serializable {
         this.emoVersion = emoVersion;
     }
 
-    public String getBillingContact() {
+    public Long getBillingContact() {
         return billingContact;
     }
 
-    public Site billingContact(String billingContact) {
+    public Site billingContact(Long billingContact) {
         this.billingContact = billingContact;
         return this;
     }
 
-    public void setBillingContact(String billingContact) {
+    public void setBillingContact(Long billingContact) {
         this.billingContact = billingContact;
     }
 
-    public String getSiteContact() {
+    public Long getSiteContact() {
         return siteContact;
     }
 
-    public Site siteContact(String siteContact) {
+    public Site siteContact(Long siteContact) {
         this.siteContact = siteContact;
         return this;
     }
 
-    public void setSiteContact(String siteContact) {
+    public void setSiteContact(Long siteContact) {
         this.siteContact = siteContact;
     }
 
-    public String getFranchiseContact() {
+    public Long getFranchiseContact() {
         return franchiseContact;
     }
 
-    public Site franchiseContact(String franchiseContact) {
+    public Site franchiseContact(Long franchiseContact) {
         this.franchiseContact = franchiseContact;
         return this;
     }
 
-    public void setFranchiseContact(String franchiseContact) {
+    public void setFranchiseContact(Long franchiseContact) {
         this.franchiseContact = franchiseContact;
     }
 

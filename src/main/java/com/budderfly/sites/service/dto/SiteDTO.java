@@ -67,11 +67,11 @@ public class SiteDTO extends AbstractAuditingDTO implements Serializable {
 
     private String emoVersion;
 
-    private String billingContact;
+    private Long billingContact;
 
-    private String siteContact;
+    private Long siteContact;
 
-    private String franchiseContact;
+    private Long franchiseContact;
 
     private Long parentSiteId;
 
@@ -259,27 +259,27 @@ public class SiteDTO extends AbstractAuditingDTO implements Serializable {
         this.emoVersion = emoVersion;
     }
 
-    public String getBillingContact() {
+    public Long getBillingContact() {
         return billingContact;
     }
 
-    public void setBillingContact(String billingContact) {
+    public void setBillingContact(Long billingContact) {
         this.billingContact = billingContact;
     }
 
-    public String getSiteContact() {
+    public Long getSiteContact() {
         return siteContact;
     }
 
-    public void setSiteContact(String siteContact) {
+    public void setSiteContact(Long siteContact) {
         this.siteContact = siteContact;
     }
 
-    public String getFranchiseContact() {
+    public Long getFranchiseContact() {
         return franchiseContact;
     }
 
-    public void setFranchiseContact(String franchiseContact) {
+    public void setFranchiseContact(Long franchiseContact) {
         this.franchiseContact = franchiseContact;
     }
 
