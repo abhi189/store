@@ -75,6 +75,8 @@ public class SiteDTO extends AbstractAuditingDTO implements Serializable {
 
     private Long parentSiteId;
 
+    private SiteDiscountDTO siteDiscountDTO;
+
     public Long getId() {
         return id;
     }
@@ -291,6 +293,14 @@ public class SiteDTO extends AbstractAuditingDTO implements Serializable {
         this.parentSiteId = siteId;
     }
 
+    public SiteDiscountDTO getSiteDiscountDTO() {
+        return siteDiscountDTO;
+    }
+
+    public void setSiteDiscountDTO(SiteDiscountDTO siteDiscountDTO) {
+        this.siteDiscountDTO = siteDiscountDTO;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -344,4 +354,5 @@ public class SiteDTO extends AbstractAuditingDTO implements Serializable {
             ", parentSite=" + getParentSiteId() +
             "}";
     }
+
 }

@@ -111,6 +111,8 @@ public class SiteCriteria implements Serializable {
 
     private LongFilter contactId;
 
+    private LongFilter siteDiscountId;
+
     public LongFilter getId() {
         return id;
     }
@@ -367,6 +369,15 @@ public class SiteCriteria implements Serializable {
         this.lastModifiedDate = lastModifiedDate;
     }
 
+    public LongFilter getSiteDiscountId() {
+        return siteDiscountId;
+    }
+
+    public void setSiteDiscountId(LongFilter siteDiscountId) {
+        this.siteDiscountId = siteDiscountId;
+    }
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -404,7 +415,8 @@ public class SiteCriteria implements Serializable {
             Objects.equals(siteContact, that.siteContact) &&
             Objects.equals(franchiseContact, that.franchiseContact) &&
             Objects.equals(parentSiteId, that.parentSiteId) &&
-            Objects.equals(contactId, that.contactId);
+            Objects.equals(contactId, that.contactId) &&
+            Objects.equals(siteDiscountId, that.siteDiscountId);
     }
 
     @Override
@@ -437,7 +449,8 @@ public class SiteCriteria implements Serializable {
         siteContact,
         franchiseContact,
         parentSiteId,
-        contactId
+        contactId,
+        siteDiscountId
         );
     }
 
@@ -473,6 +486,7 @@ public class SiteCriteria implements Serializable {
                 (franchiseContact != null ? "franchiseContact=" + franchiseContact + ", " : "") +
                 (parentSiteId != null ? "parentSiteId=" + parentSiteId + ", " : "") +
                 (contactId != null ? "contactId=" + contactId + ", " : "") +
+                (siteDiscountId != null ? "siteDiscountId=" + siteDiscountId + ", " : "") +
             "}";
     }
 

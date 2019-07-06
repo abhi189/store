@@ -4,7 +4,7 @@
 
     <groupId>com.budderfly.sites</groupId>
     <artifactId>sites</artifactId>
-    <version>0.2.22</version>
+    <version>0.2.28</version>
     <packaging>war</packaging>
     <name>Sites</name>
 
@@ -401,6 +401,10 @@
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-data</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>

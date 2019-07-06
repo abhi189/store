@@ -14,7 +14,37 @@ public class SiteSyncDTO implements Serializable {
 
     private String emoVersion;
 
+    private String contactEmail;
+
+    private String billingEmail;
+
+    private String franchiseEmail;
+
     public SiteSyncDTO() {
+    }
+
+    public String getContactEmail() {
+        return contactEmail;
+    }
+
+    public void setContactEmail(String contactEmail) {
+        this.contactEmail = contactEmail;
+    }
+
+    public String getBillingEmail() {
+        return billingEmail;
+    }
+
+    public void setBillingEmail(String billingEmail) {
+        this.billingEmail = billingEmail;
+    }
+
+    public String getFranchiseEmail() {
+        return franchiseEmail;
+    }
+
+    public void setFranchiseEmail(String franchiseEmail) {
+        this.franchiseEmail = franchiseEmail;
     }
 
     public SiteSyncDTO(String budderflyId) {
@@ -72,6 +102,9 @@ public class SiteSyncDTO implements Serializable {
             "id=" + getId() +
             ", emoVersion='" + getEmoVersion() + '\'' +
             ", budderflyId='" + getBudderflyId() + '\'' +
+            ", contactEmail='" + getContactEmail() + '\'' +
+            ", franchiseEmail='" + getFranchiseEmail() + '\'' +
+            ", billingEmail='" + getBillingEmail() + '\'' +
             '}';
     }
 }

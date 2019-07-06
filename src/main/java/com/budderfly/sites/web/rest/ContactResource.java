@@ -108,6 +108,13 @@ public class ContactResource {
         return ResponseEntity.ok().body(contactDtos);
     }
 
+    @GetMapping("/contacts/by-contain-email/{email}")
+    public ResponseEntity<List<ContactDTO>> getContactsByContainingEmail(@PathVariable String email) {
+        log.debug("REST request to get Contacts containing: " + email);
+        List<ContactDTO> contactDtos = contactService.findByEmailContaining(email);
+        return ResponseEntity.ok().body(contactDtos);
+    }
+
     /**
     * GET  /contacts/count : count all the contacts.
     *

@@ -177,5 +177,13 @@
         <modifyDataType tableName="site" columnName="billing_contact" newDataType="bigint"></modifyDataType>
     </changeSet>
 
+    <changeSet id="BD-1453-1" author="victormedeiros">
+        <addColumn tableName="site">
+            <column name="site_discount_id" type="bigint">
+                <constraints unique="true" nullable="true" uniqueConstraintName="ux_site_site_discount_id" />
+            </column>
+        </addColumn>
+    </changeSet>
+
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
 </databaseChangeLog>

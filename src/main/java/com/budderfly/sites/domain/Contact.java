@@ -38,6 +38,7 @@ public class Contact implements Serializable {
     @Column(name = "web_page")
     private String webPage;
 
+    @Lob
     @Column(name = "notes")
     private String notes;
 

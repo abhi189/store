@@ -7,7 +7,7 @@
         Added the constraints for entity Site.
     -->
     <changeSet id="20181018181721-2" author="jhipster">
-        
+
         <addForeignKeyConstraint baseColumnNames="parent_site_id"
                                  baseTableName="site"
                                  constraintName="fk_site_parent_site_id"
@@ -24,5 +24,13 @@
                                  referencedColumnNames="id"
                                  referencedTableName="contact"/>
 
+    </changeSet>
+
+    <changeSet id="BD-1453-2" author="victormedeiros">
+        <addForeignKeyConstraint baseColumnNames="site_discount_id"
+                                 baseTableName="site"
+                                 constraintName="fk_site_site_discount_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="site_discount"/>
     </changeSet>
 </databaseChangeLog>

@@ -1,9 +1,11 @@
 package com.budderfly.sites.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.*;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.*;
@@ -128,6 +130,10 @@ public class Site extends AbstractAuditingEntity implements Serializable {
     @ManyToOne
     @JsonIgnoreProperties("")
     private Site parentSite;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(unique = true)
+    private SiteDiscount siteDiscount;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -474,6 +480,19 @@ public class Site extends AbstractAuditingEntity implements Serializable {
 
     public void setParentSite(Site site) {
         this.parentSite = site;
+    }
+
+    public SiteDiscount getSiteDiscount() {
+        return siteDiscount;
+    }
+
+    public Site siteDiscount(SiteDiscount siteDiscount) {
+        this.siteDiscount = siteDiscount;
+        return this;
+    }
+
+    public void setSiteDiscount(SiteDiscount siteDiscount) {
+        this.siteDiscount = siteDiscount;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

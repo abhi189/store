@@ -2,19 +2,20 @@ package com.budderfly.sites.service.impl;
 
 import com.budderfly.sites.client.AuthenticateClient;
 import com.budderfly.sites.client.BillingClient;
+import com.budderfly.sites.client.RestResponsePage;
+import com.budderfly.sites.domain.Contact;
 import com.budderfly.sites.domain.Site;
-import com.budderfly.sites.domain.enumeration.BillingType;
-import com.budderfly.sites.domain.enumeration.PaymentType;
-import com.budderfly.sites.domain.enumeration.SiteStatus;
+import com.budderfly.sites.domain.enumeration.*;
+import com.budderfly.sites.repository.ContactRepository;
 import com.budderfly.sites.repository.SiteFilter;
 import com.budderfly.sites.repository.SiteRepository;
 import com.budderfly.sites.repository.search.SiteSearchRepository;
+import com.budderfly.sites.service.KafkaProducer;
 import com.budderfly.sites.service.SiteService;
 import com.budderfly.sites.service.dto.SiteAccountDTO;
 import com.budderfly.sites.service.dto.SiteDTO;
 import com.budderfly.sites.service.dto.SiteSyncDTO;
 import com.budderfly.sites.service.mapper.SiteMapper;
-import com.netflix.hystrix.exception.HystrixRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -26,9 +27,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Pattern;
@@ -46,20 +45,24 @@ public class SiteServiceImpl implements SiteService {
     private final SiteRepository siteRepository;
     private final SiteMapper siteMapper;
     private final SiteSearchRepository siteSearchRepository;
+    private final ContactRepository contactRepository;
     private final BillingClient billingClient;
     private final AuthenticateClient authenticateClient;
+    private final KafkaProducer kafkaProducer;
     private final ElasticsearchOperations elasticsearchTemplate;
     private static final Lock reindexLock = new ReentrantLock();
     private final Pattern VALID_BUDDERFLY_ID = Pattern.compile("^([A-Z]{2,}-[0-9]{1,})+$");
 
-    public SiteServiceImpl(SiteRepository siteRepository, SiteMapper siteMapper, SiteSearchRepository siteSearchRepository,
-                           BillingClient billingClient, ElasticsearchOperations elasticsearchTemplate, AuthenticateClient authenticateClient) {
+    public SiteServiceImpl(SiteRepository siteRepository, SiteMapper siteMapper, SiteSearchRepository siteSearchRepository, ContactRepository contactRepository,
+                           BillingClient billingClient, ElasticsearchOperations elasticsearchTemplate, AuthenticateClient authenticateClient, KafkaProducer kafkaProducer) {
         this.siteRepository = siteRepository;
         this.siteMapper = siteMapper;
         this.siteSearchRepository = siteSearchRepository;
         this.billingClient = billingClient;
         this.elasticsearchTemplate = elasticsearchTemplate;
         this.authenticateClient = authenticateClient;
+        this.contactRepository = contactRepository;
+        this.kafkaProducer = kafkaProducer;
     }
 
     /**
@@ -161,52 +164,64 @@ public class SiteServiceImpl implements SiteService {
     public void syncSites(){
         log.info("Getting Current SitesAccounts");
         try {
-            ResponseEntity<List<SiteAccountDTO>> sitesAccounts = billingClient.getSitesAccounts();
 
-            if (sitesAccounts != null && sitesAccounts.getStatusCode().equals(HttpStatus.OK)) {
+            Long page = new Long(1);
+            Long size = new Long(100);
+            ResponseEntity<RestResponsePage<SiteAccountDTO>> sitesAccounts = billingClient.getSitesAccounts(page, size);
 
-                List<Site> currentSites = siteRepository.findAll();
+            for (int i = 1; i < sitesAccounts.getBody().getTotalPages(); i++) {
+                if (page > 1) sitesAccounts = billingClient.getSitesAccounts(page, size);
 
-                for (SiteAccountDTO siteAccount : sitesAccounts.getBody()) {
-                    Site result = currentSites.stream()
-                        .filter(item -> item.getBudderflyId().equals(siteAccount.getBudderflyId()))
-                        .findFirst()
-                        .orElse(null);
+                log.debug("CHECKING SITEACCOUNTS CONTENT");
+                if (sitesAccounts != null && sitesAccounts.getStatusCode().equals(HttpStatus.OK)) {
+                    log.debug("READING SITEACCOUNT CONTENT");
+                    log.debug("VERIFYING BODY: "+sitesAccounts.getBody().getContent());
 
-                    if (result == null && VALID_BUDDERFLY_ID.matcher(siteAccount.getBudderflyId()).find()) {
-                        log.info("" + siteAccount.getBudderflyId() + " IS a VALID BUDDERFLYID and is going to be ADDED as a NEW SITE");
+                    List<Site> currentSites = siteRepository.findAll();
 
-                        SiteDTO site = new SiteDTO();
-                        Site siteEntity = siteMapper.toEntity(site);
+                    for (SiteAccountDTO siteAccount : sitesAccounts.getBody().getContent()) {
+                        log.debug("VERIFYING BUDDERFLYID: "+ siteAccount.getBudderflyId());
+                        Site result = currentSites.stream()
+                            .filter(item -> item.getBudderflyId().equals(siteAccount.getBudderflyId()))
+                            .findFirst()
+                            .orElse(null);
 
-                        site.setBudderflyId(siteAccount.getBudderflyId());
-                        site.setCustomerName(siteAccount.getCustomerName());
-                        site.setCompanyType(siteAccount.getSiteCode());
-                        site.setStoreNumber(siteAccount.getCustomerCode());
-                        site.setStatus(SiteStatus.ACTIVE);
-                        site.setAddress(siteAccount.getSiteAddress1());
-                        site.setPaymentType(PaymentType.Check);
-                        if (siteAccount.getArrears() != null && siteAccount.getArrears() == true) {
-                            site.setBillingType(BillingType.AMU_Arrears);
+                        if (result == null && VALID_BUDDERFLY_ID.matcher(siteAccount.getBudderflyId()).find()) {
+                            log.info("" + siteAccount.getBudderflyId() + " IS a VALID BUDDERFLYID and is going to be ADDED as a NEW SITE");
+
+                            SiteDTO site = new SiteDTO();
+                            Site siteEntity = siteMapper.toEntity(site);
+
+                            site.setBudderflyId(siteAccount.getBudderflyId());
+                            site.setCustomerName(siteAccount.getCustomerName());
+                            site.setCompanyType(siteAccount.getSiteCode());
+                            site.setStoreNumber(siteAccount.getCustomerCode());
+                            site.setStatus(SiteStatus.ACTIVE);
+                            site.setAddress(siteAccount.getSiteAddress1());
+                            site.setPaymentType(PaymentType.Check);
+                            if (siteAccount.getArrears() != null && siteAccount.getArrears() == true) {
+                                site.setBillingType(BillingType.AMU_Arrears);
+                            } else {
+                                site.setBillingType(BillingType.AMU_Forward);
+                            }
+                            site.setOwnerName("");
+                            site.setOwnerEmail("");
+                            site.setOwnerPhone("");
+
+                            this.save(site);
+                            siteSearchRepository.save(siteEntity);
+
                         } else {
-                            site.setBillingType(BillingType.AMU_Forward);
-                        }
-                        site.setOwnerName("");
-                        site.setOwnerEmail("");
-                        site.setOwnerPhone("");
-
-                        this.save(site);
-                        siteSearchRepository.save(siteEntity);
-
-                    } else {
-                        if (!VALID_BUDDERFLY_ID.matcher(siteAccount.getBudderflyId()).find()){
-                            log.warn("BUDDERFLYID: " + siteAccount.getBudderflyId() + " IS NOT a VALID NAME");
+                            if (!VALID_BUDDERFLY_ID.matcher(siteAccount.getBudderflyId()).find()) {
+                                log.warn("BUDDERFLYID: " + siteAccount.getBudderflyId() + " IS NOT a VALID NAME");
+                            }
                         }
                     }
-                }
-            } else {
+                    page++;
+               }else{
                 log.error("Error trying to get SitesAccounts from Billing Microservice");
             }
+        }
         }catch (Exception e) {
             log.error("Error trying to Sync Sites: "+e.getMessage());
         }
@@ -225,6 +240,12 @@ public class SiteServiceImpl implements SiteService {
         return siteMapper.toDto(site);
     }
 
+    @Override
+    public List<SiteDTO> findSitesBySiteStatus(SiteStatus siteStatus) {
+        List<Site> sites = this.siteRepository.findByStatus(siteStatus);
+        return siteMapper.toDto(sites);
+    }
+
     @Async
     @Override
     public void syncInjobsData(List<SiteSyncDTO> listSitesSync) {
@@ -234,12 +255,47 @@ public class SiteServiceImpl implements SiteService {
             SiteDTO siteDTO = this.findByBudderflyId(siteSyncDTO.getBudderflyId());
             if (siteDTO != null){
                 siteDTO.setEmoVersion(siteSyncDTO.getEmoVersion());
+                siteDTO.setSiteContact(getIdFromEmail(siteSyncDTO.getContactEmail()));
+                siteDTO.setBillingContact(getIdFromEmail(siteSyncDTO.getBillingEmail()));
+                siteDTO.setFranchiseContact(getIdFromEmail(siteSyncDTO.getFranchiseEmail()));
                 log.debug("EMO Version {} set to Site {}.", siteDTO.getEmoVersion(), siteDTO.getBudderflyId());
                 this.save(siteDTO);
                 sitesSynced[0]++;
+
+                List<String> emails = new ArrayList<>();
+                if (siteSyncDTO.getContactEmail() != null) {
+                    emails.add(siteSyncDTO.getContactEmail());
+                }
+                if (siteSyncDTO.getBillingEmail() != null) {
+                    emails.add(siteSyncDTO.getBillingEmail());
+                }
+                if (siteSyncDTO.getFranchiseEmail() != null) {
+                    emails.add(siteSyncDTO.getFranchiseEmail());
+                }
+                if (emails != null && !emails.isEmpty()) {
+                    Map<String, Object> dict = new HashMap<String, Object>();
+                    dict.put(KafkaDataKeys.EMAIL.toString(), emails);
+                    dict.put(KafkaDataKeys.BUDDERFLY_ID.toString(), siteSyncDTO.getBudderflyId());
+
+                    kafkaProducer.sendMessage(KafkaTopics.OWNER_SYNC, dict); // update authenticate.user_site with shop
+                }
             }
         });
         log.info("Sync process with injobs data finished. Synced {} sites.", sitesSynced[0]);
+    }
+
+    private Long getIdFromEmail(String contactEmail) {
+        if (contactEmail == null || contactEmail.equals("")) {
+            return null;
+        }
+
+        List<Contact> contact = contactRepository.findByContactEmail(contactEmail);
+        if (contact == null || contact.isEmpty()) {
+            log.debug(contactEmail + " exists on a site but not under contacts");
+            return null;
+        }
+
+        return contact.get(0).getId();
     }
 
     @Override
@@ -247,5 +303,11 @@ public class SiteServiceImpl implements SiteService {
         List<String> ids = authenticateClient.getShopsOwnedByUser(login);
 
         return ids;
+    }
+
+    @Override
+    public List<SiteDTO> getSiteBasedOnSiteOwnership(String email) {
+        List<Site> sites = siteRepository.getSiteBasedOnSiteOwnership(email);
+        return siteMapper.toDto(sites);
     }
 }

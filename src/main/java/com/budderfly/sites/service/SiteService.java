@@ -1,5 +1,6 @@
 package com.budderfly.sites.service;
 
+import com.budderfly.sites.domain.enumeration.SiteStatus;
 import com.budderfly.sites.service.dto.SiteDTO;
 import com.budderfly.sites.service.dto.SiteSyncDTO;
 import org.springframework.data.domain.Page;
@@ -76,6 +77,10 @@ public interface SiteService {
 
     List<SiteDTO> findSitesBySiteEmail(String email);
 
+    List<SiteDTO> findSitesBySiteStatus(SiteStatus siteStatus);
+
     List<String> getShopsOwnedByUser(String login);
+
+    List<SiteDTO> getSiteBasedOnSiteOwnership(String email);
 
 }

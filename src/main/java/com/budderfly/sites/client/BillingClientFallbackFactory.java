@@ -3,6 +3,7 @@ import com.budderfly.sites.service.dto.SiteAccountDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
@@ -36,7 +37,7 @@ public class BillingClientFallbackFactory implements BillingClient, FallbackFact
     }
 
     @Override
-    public ResponseEntity<List<SiteAccountDTO>> getSitesAccounts() {
+    public ResponseEntity<RestResponsePage<SiteAccountDTO>> getSitesAccounts(Long page, Long size) {
         log.warn("getSitesAccounts: problems detected while interacting with the Billing service.");
         return null;
     }

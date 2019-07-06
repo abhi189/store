@@ -16,4 +16,6 @@ public interface ContactRepository extends JpaRepository<Contact, Long>, JpaSpec
 
     List<Contact> findByContactEmail(String email);
 
+    List<Contact> findByContactEmailContainingIgnoreCase(String email);
+
 }

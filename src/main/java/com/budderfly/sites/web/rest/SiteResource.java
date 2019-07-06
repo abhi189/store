@@ -1,6 +1,7 @@
 package com.budderfly.sites.web.rest;
 
 import com.budderfly.sites.domain.Site;
+import com.budderfly.sites.domain.enumeration.SiteStatus;
 import com.budderfly.sites.service.dto.PortalSiteDTO;
 import com.budderfly.sites.service.dto.SiteSyncDTO;
 import com.codahale.metrics.annotation.Timed;
@@ -126,6 +127,13 @@ public class SiteResource {
         siteService.syncSites();
     }
 
+    @GetMapping("/sites/owned-by-contacts/{email}")
+    public ResponseEntity<List<SiteDTO>> getSitesBySiteContacts(@PathVariable String email) {
+        List<SiteDTO> sites = siteService.getSiteBasedOnSiteOwnership(email);
+
+        return ResponseEntity.ok(sites);
+    }
+
     /**
      * GET  /sites : get all the sites.
      *
@@ -202,6 +210,15 @@ public class SiteResource {
         SiteDTO siteDTO = siteService.findByBudderflyId(budderflyId);
 
         return ResponseEntity.ok(siteDTO);
+    }
+
+    @GetMapping("/sites/sites-by-status/{status}")
+    @Timed
+    public ResponseEntity<List<SiteDTO>> getSiteByStatus(@PathVariable SiteStatus status) {
+        log.debug("REST request to get sites by status " + status );
+        List<SiteDTO> siteDTOS = siteService.findSitesBySiteStatus(status);
+
+        return ResponseEntity.ok(siteDTOS);
     }
 
     /**

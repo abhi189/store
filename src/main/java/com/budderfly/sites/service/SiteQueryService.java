@@ -174,6 +174,10 @@ public class SiteQueryService extends QueryService<Site> {
             if (criteria.getSiteContact() != null) {
                 specification = specification.and(buildSpecification(criteria.getSiteContact(), Site_.siteContact));
             }
+            if (criteria.getSiteDiscountId() != null) {
+                specification = specification.and(buildSpecification(criteria.getSiteDiscountId(),
+                    root -> root.join(Site_.siteDiscount, JoinType.LEFT).get(SiteDiscount_.id)));
+            }
         }
         return specification;
     }

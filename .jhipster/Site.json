@@ -1,5 +1,6 @@
 {
     "fluentMethods": true,
+    "clientRootFolder": "sites",
     "relationships": [
         {
             "relationshipName": "parentSite",
@@ -12,6 +13,14 @@
             "otherEntityName": "contact",
             "relationshipType": "one-to-many",
             "otherEntityField": "id"
+        },
+        {
+            "relationshipName": "siteDiscount",
+            "otherEntityName": "siteDiscount",
+            "relationshipType": "one-to-one",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "site"
         }
     ],
     "fields": [
@@ -147,7 +156,7 @@
     "entityTableName": "site",
     "jpaMetamodelFiltering": true,
     "pagination": "pagination",
-    "microserviceName": "billing",
+    "microserviceName": "sites",
     "searchEngine": "elasticsearch",
     "enableEntityAudit": true
 }

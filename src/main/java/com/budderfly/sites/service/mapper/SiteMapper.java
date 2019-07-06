@@ -8,13 +8,15 @@ import org.mapstruct.*;
 /**
  * Mapper for the entity Site and its DTO SiteDTO.
  */
-@Mapper(componentModel = "spring", uses = {})
+@Mapper(componentModel = "spring", uses = {SiteDiscountMapper.class})
 public interface SiteMapper extends EntityMapper<SiteDTO, Site> {
 
     @Mapping(source = "parentSite.id", target = "parentSiteId")
+    @Mapping(source = "siteDiscount", target = "siteDiscountDTO")
     SiteDTO toDto(Site site);
 
     @Mapping(source = "parentSiteId", target = "parentSite")
+    @Mapping(source = "siteDiscountDTO", target = "siteDiscount")
     Site toEntity(SiteDTO siteDTO);
 
     default Site fromId(Long id) {

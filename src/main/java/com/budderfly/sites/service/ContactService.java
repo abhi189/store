@@ -96,6 +96,10 @@ public class ContactService {
         return contactMapper.toDto(contactRepository.findByContactEmail(email));
     }
 
+    public List<ContactDTO> findByEmailContaining(String email) {
+        return contactMapper.toDto(contactRepository.findByContactEmailContainingIgnoreCase(email));
+    }
+
     /**
      * Search for the contact corresponding to the query.
      *

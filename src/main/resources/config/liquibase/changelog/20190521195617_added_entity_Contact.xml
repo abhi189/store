@@ -84,5 +84,10 @@
         <dropDefaultValue tableName="contact" columnName="last_modify_date" columnDataType="datetime"/>
         
     </changeSet>
+
+    <changeSet id="BD-1524-1" author="paulbrenner">
+        <modifyDataType tableName="contact" columnName="notes" newDataType="clob"></modifyDataType>
+    </changeSet>
+
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
 </databaseChangeLog>
