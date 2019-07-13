@@ -27,7 +27,9 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Pattern;
@@ -306,8 +308,8 @@ public class SiteServiceImpl implements SiteService {
     }
 
     @Override
-    public List<SiteDTO> getSiteBasedOnSiteOwnership(String email) {
-        List<Site> sites = siteRepository.getSiteBasedOnSiteOwnership(email);
-        return siteMapper.toDto(sites);
+    public Page<SiteDTO> getSiteBasedOnSiteOwnership(String email, Pageable pageable) {
+        Page<SiteDTO> sites = siteRepository.getSiteBasedOnSiteOwnership(email, pageable).map(siteMapper::toDto);
+        return sites;
     }
 }

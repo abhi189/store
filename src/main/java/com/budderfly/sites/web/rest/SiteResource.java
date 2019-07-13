@@ -15,7 +15,10 @@ import com.budderfly.sites.service.SiteQueryService;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.support.MutableSortDefinition;
+import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -128,10 +131,12 @@ public class SiteResource {
     }
 
     @GetMapping("/sites/owned-by-contacts/{email}")
-    public ResponseEntity<List<SiteDTO>> getSitesBySiteContacts(@PathVariable String email) {
-        List<SiteDTO> sites = siteService.getSiteBasedOnSiteOwnership(email);
+    public ResponseEntity<List<SiteDTO>> getSitesBySiteContacts(@PathVariable String email, Pageable pageable) {
+        log.debug("REST request to get Sites owned by: " + email);
+        Page<SiteDTO> page = siteService.getSiteBasedOnSiteOwnership(email, pageable);
 
-        return ResponseEntity.ok(sites);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/sites/owned-by-contacts/" + email);
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
     /**
@@ -237,6 +242,20 @@ public class SiteResource {
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/sites");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
+
+    @GetMapping("/_search/owned-by-contacts")
+    @Timed
+    public ResponseEntity<List<SiteDTO>> searchSitesWithOwnership(@RequestBody List<SiteDTO> siteDTOS, @RequestParam String query, Pageable pageable) {
+        log.debug("REST request to search for a page of Sites with ownership for query {}", query);
+        List<SiteDTO> siteSearch = siteService.search(query, pageable).getContent();
+        siteSearch.retainAll(siteDTOS);
+
+        Page<SiteDTO> page = new PageImpl<>(siteSearch, pageable, siteSearch.size());
+        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/owned-by-contacts");
+
+        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+    }
+
 
     /**
      * GET  /sites/:id : get the "id" site.

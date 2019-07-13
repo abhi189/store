@@ -2,6 +2,8 @@ package com.budderfly.sites.repository;
 
 import com.budderfly.sites.domain.Site;
 import com.budderfly.sites.domain.enumeration.SiteStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
@@ -19,7 +21,7 @@ public interface SiteRepository extends JpaRepository<Site, Long>, JpaSpecificat
     Long findSiteIdByBudderflyId(String budderflyId);
 
     @Query("SELECT s FROM Site s, Contact c WHERE c.contactEmail = ?1 AND ( s.siteContact = c.id OR s.billingContact = c.id OR s.franchiseContact = c.id )")
-    List<Site> getSiteBasedOnSiteOwnership(String email);
+    Page<Site> getSiteBasedOnSiteOwnership(String email, Pageable pageable);
 
     Site findByBudderflyId(String budderflyId);
 
