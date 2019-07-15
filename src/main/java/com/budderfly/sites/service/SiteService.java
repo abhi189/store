@@ -81,6 +81,6 @@ public interface SiteService {
 
     List<String> getShopsOwnedByUser(String login);
 
-    Page<SiteDTO> getSiteBasedOnSiteOwnership(String email, Pageable pageable);
+    List<SiteDTO> getSiteBasedOnSiteOwnership(String email);
 
 }

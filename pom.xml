@@ -4,7 +4,7 @@
 
     <groupId>com.budderfly.sites</groupId>
     <artifactId>sites</artifactId>
-    <version>0.2.28</version>
+    <version>0.2.29</version>
     <packaging>war</packaging>
     <name>Sites</name>
 
