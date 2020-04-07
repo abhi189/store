@@ -174,6 +174,12 @@ public class SiteQueryService extends QueryService<Site> {
             if (criteria.getSiteContact() != null) {
                 specification = specification.and(buildSpecification(criteria.getSiteContact(), Site_.siteContact));
             }
+            if (criteria.getEnableTicketDispatch() != null) {
+                specification = specification.and(buildSpecification(criteria.getEnableTicketDispatch(), Site_.enableTicketDispatch));
+            }
+            if (criteria.getTimeZoneId() != null) {
+                specification = specification.and(buildStringSpecification(criteria.getTimeZoneId(), Site_.timeZoneId));
+            }
         }
         return specification;
     }

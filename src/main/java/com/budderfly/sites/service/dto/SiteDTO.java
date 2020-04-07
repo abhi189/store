@@ -74,6 +74,12 @@ public class SiteDTO extends AbstractAuditingDTO implements Serializable {
     private Long franchiseContact;
 
     private Long parentSiteId;
+    
+    private String contactDeskId;
+
+    private Boolean enableTicketDispatch;
+
+    private String timeZoneId;
 
     public Long getId() {
         return id;
@@ -291,6 +297,30 @@ public class SiteDTO extends AbstractAuditingDTO implements Serializable {
         this.parentSiteId = siteId;
     }
 
+    public String getContactDeskId() {
+        return contactDeskId;
+    }
+
+    public void setContactDeskId(String contactDeskId) {
+        this.contactDeskId = contactDeskId;
+    }
+
+    public Boolean getEnableTicketDispatch() {
+        return enableTicketDispatch;
+    }
+
+    public void setEnableTicketDispatch(Boolean enableTicketDispatch) {
+        this.enableTicketDispatch = enableTicketDispatch;
+    }
+
+    public String getTimeZoneId() {
+        return timeZoneId;
+    }
+
+    public void setTimeZoneId(String timeZoneId) {
+        this.timeZoneId = timeZoneId;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -342,6 +372,9 @@ public class SiteDTO extends AbstractAuditingDTO implements Serializable {
             ", siteContact='" + getSiteContact() + "'" +
             ", franchiseContact='" + getFranchiseContact() + "'" +
             ", parentSite=" + getParentSiteId() +
+            ", contactDeskId='" + getContactDeskId() + "'" +
+            ", enableTicketDispatch='" + getEnableTicketDispatch() + "'" +
+            ", timeZoneId='" + getTimeZoneId() + "'" +
             "}";
     }
 

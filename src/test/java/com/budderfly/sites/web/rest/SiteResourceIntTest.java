@@ -121,6 +121,12 @@ public class SiteResourceIntTest {
     private static final String DEFAULT_EMO_VERSION = "AAAAAAAAAA";
     private static final String UPDATED_EMO_VERSION = "BBBBBBBBBB";
 
+    private static final String DEFAULT_CONTACT_DESK_ID = "AAAAAAAAAA";
+    private static final String UPDATED_CONTACT_DESK_ID = "BBBBBBBBBB";
+
+    private static final Boolean DEFAULT_ENABLE_TICKET_DISPATCH = false;
+    private static final Boolean UPDATED_ENABLE_TICKET_DISPATCH = true;
+
     @Autowired
     private SiteRepository siteRepository;
 
@@ -201,7 +207,9 @@ public class SiteResourceIntTest {
             .longitude(DEFAULT_LONGITUDE)
             .taxExempt(DEFAULT_TAX_EXEMPT)
             .rollBilling(DEFAULT_ROLL_BILLING)
-            .emoVersion(DEFAULT_EMO_VERSION);
+            .emoVersion(DEFAULT_EMO_VERSION)
+            .contactDeskId(DEFAULT_CONTACT_DESK_ID)
+            .enableTicketDispatch(DEFAULT_ENABLE_TICKET_DISPATCH);
         return site;
     }
 
@@ -248,6 +256,8 @@ public class SiteResourceIntTest {
         assertThat(testSite.isTaxExempt()).isEqualTo(DEFAULT_TAX_EXEMPT);
         assertThat(testSite.isRollBilling()).isEqualTo(DEFAULT_ROLL_BILLING);
         assertThat(testSite.getEmoVersion()).isEqualTo(DEFAULT_EMO_VERSION);
+        assertThat(testSite.getContactDeskId()).isEqualTo(DEFAULT_CONTACT_DESK_ID);
+        assertThat(testSite.getEnableTicketDispatch()).isEqualTo(DEFAULT_ENABLE_TICKET_DISPATCH);
 
         // Validate the Site in Elasticsearch
         verify(mockSiteSearchRepository, times(1)).save(testSite);
@@ -441,7 +451,9 @@ public class SiteResourceIntTest {
             .andExpect(jsonPath("$.[*].longitude").value(hasItem(DEFAULT_LONGITUDE.toString())))
             .andExpect(jsonPath("$.[*].taxExempt").value(hasItem(DEFAULT_TAX_EXEMPT.booleanValue())))
             .andExpect(jsonPath("$.[*].rollBilling").value(hasItem(DEFAULT_ROLL_BILLING.booleanValue())))
-            .andExpect(jsonPath("$.[*].emoVersion").value(hasItem(DEFAULT_EMO_VERSION.toString())));
+            .andExpect(jsonPath("$.[*].emoVersion").value(hasItem(DEFAULT_EMO_VERSION.toString())))
+            .andExpect(jsonPath("$.[*].contactDeskId").value(hasItem(DEFAULT_CONTACT_DESK_ID.toString())))
+            .andExpect(jsonPath("$.[*].enableTicketDispatch").value(hasItem(DEFAULT_ENABLE_TICKET_DISPATCH.booleanValue())));
     }
 
     @Test
@@ -476,7 +488,9 @@ public class SiteResourceIntTest {
             .andExpect(jsonPath("$.longitude").value(DEFAULT_LONGITUDE.toString()))
             .andExpect(jsonPath("$.taxExempt").value(DEFAULT_TAX_EXEMPT.booleanValue()))
             .andExpect(jsonPath("$.rollBilling").value(DEFAULT_ROLL_BILLING.booleanValue()))
-            .andExpect(jsonPath("$.emoVersion").value(DEFAULT_EMO_VERSION.toString()));
+            .andExpect(jsonPath("$.emoVersion").value(DEFAULT_EMO_VERSION.toString()))
+            .andExpect(jsonPath("$.contactDeskId").value(DEFAULT_CONTACT_DESK_ID.toString()))
+            .andExpect(jsonPath("$.enableTicketDispatch").value(DEFAULT_ENABLE_TICKET_DISPATCH.booleanValue()));
     }
 
     @Test
@@ -1366,6 +1380,45 @@ public class SiteResourceIntTest {
 
     @Test
     @Transactional
+    public void getAllSitesByEnableTicketDispatchIsEqualToSomething() throws Exception {
+        // Initialize the database
+        siteRepository.saveAndFlush(site);
+
+        // Get all the siteList where enableTicketDispatch equals to DEFAULT_ENABLE_TICKET_DISPATCH
+        defaultSiteShouldBeFound("enableTicketDispatch.equals=" + DEFAULT_ENABLE_TICKET_DISPATCH);
+
+        // Get all the siteList where enableTicketDispatch equals to UPDATED_ENABLE_TICKET_DISPATCH
+        defaultSiteShouldNotBeFound("enableTicketDispatch.equals=" + UPDATED_ENABLE_TICKET_DISPATCH);
+    }
+
+    @Test
+    @Transactional
+    public void getAllSitesByEnableTicketDispatchIsInShouldWork() throws Exception {
+        // Initialize the database
+        siteRepository.saveAndFlush(site);
+
+        // Get all the siteList where enableTicketDispatch in DEFAULT_ENABLE_TICKET_DISPATCH or UPDATED_ENABLE_TICKET_DISPATCH
+        defaultSiteShouldBeFound("enableTicketDispatch.in=" + DEFAULT_ENABLE_TICKET_DISPATCH + "," + UPDATED_ENABLE_TICKET_DISPATCH);
+
+        // Get all the siteList where enableTicketDispatch equals to UPDATED_ENABLE_TICKET_DISPATCH
+        defaultSiteShouldNotBeFound("enableTicketDispatch.in=" + UPDATED_ENABLE_TICKET_DISPATCH);
+    }
+
+    @Test
+    @Transactional
+    public void getAllSitesByEnableTicketDispatchIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        siteRepository.saveAndFlush(site);
+
+        // Get all the siteList where enableTicketDispatch is not null
+        defaultSiteShouldBeFound("enableTicketDispatch.specified=true");
+
+        // Get all the siteList where enableTicketDispatch is null
+        defaultSiteShouldNotBeFound("enableTicketDispatch.specified=false");
+    }
+
+    @Test
+    @Transactional
     public void getAllSitesByParentSiteIsEqualToSomething() throws Exception {
         // Initialize the database
         Site parentSite = SiteResourceIntTest.createEntity(em);
@@ -1380,6 +1433,45 @@ public class SiteResourceIntTest {
 
         // Get all the siteList where parentSite equals to parentSiteId + 1
         defaultSiteShouldNotBeFound("parentSiteId.equals=" + (parentSiteId + 1));
+    }
+
+    @Test
+    @Transactional
+    public void getAllSitesByContactDeskIdIsEqualToSomething() throws Exception {
+        // Initialize the database
+        siteRepository.saveAndFlush(site);
+
+        // Get all the siteList where contactDeskId equals to DEFAULT_CONTACT_DESK_ID
+        defaultSiteShouldBeFound("contactDeskId.equals=" + DEFAULT_CONTACT_DESK_ID);
+
+        // Get all the siteList where contactDeskId equals to UPDATED_CONTACT_DESK_ID
+        defaultSiteShouldNotBeFound("contactDeskId.equals=" + UPDATED_CONTACT_DESK_ID);
+    }
+
+    @Test
+    @Transactional
+    public void getAllSitesByContactDeskIdIsInShouldWork() throws Exception {
+        // Initialize the database
+        siteRepository.saveAndFlush(site);
+
+        // Get all the siteList where contactDeskId in DEFAULT_CONTACT_DESK_ID or UPDATED_CONTACT_DESK_ID
+        defaultSiteShouldBeFound("contactDeskId.in=" + DEFAULT_CONTACT_DESK_ID + "," + UPDATED_CONTACT_DESK_ID);
+
+        // Get all the siteList where contactDeskId equals to UPDATED_CONTACT_DESK_ID
+        defaultSiteShouldNotBeFound("contactDeskId.in=" + UPDATED_CONTACT_DESK_ID);
+    }
+
+    @Test
+    @Transactional
+    public void getAllSitesByContactDeskIdIsNullOrNotNull() throws Exception {
+        // Initialize the database
+        siteRepository.saveAndFlush(site);
+
+        // Get all the siteList where contactDeskId is not null
+        defaultSiteShouldBeFound("contactDeskId.specified=true");
+
+        // Get all the siteList where contactDeskId is null
+        defaultSiteShouldNotBeFound("contactDeskId.specified=false");
     }
 
     /**
@@ -1411,7 +1503,8 @@ public class SiteResourceIntTest {
             .andExpect(jsonPath("$.[*].longitude").value(hasItem(DEFAULT_LONGITUDE.toString())))
             .andExpect(jsonPath("$.[*].taxExempt").value(hasItem(DEFAULT_TAX_EXEMPT.booleanValue())))
             .andExpect(jsonPath("$.[*].rollBilling").value(hasItem(DEFAULT_ROLL_BILLING.booleanValue())))
-            .andExpect(jsonPath("$.[*].emoVersion").value(hasItem(DEFAULT_EMO_VERSION.toString())));
+            .andExpect(jsonPath("$.[*].emoVersion").value(hasItem(DEFAULT_EMO_VERSION.toString())))
+            .andExpect(jsonPath("$.[*].contactDeskId").value(hasItem(DEFAULT_CONTACT_DESK_ID.toString())));
 
         // Check, that the count call also returns 1
         restSiteMockMvc.perform(get("/api/sites/count?sort=id,desc&" + filter))
@@ -1480,7 +1573,9 @@ public class SiteResourceIntTest {
             .longitude(UPDATED_LONGITUDE)
             .taxExempt(UPDATED_TAX_EXEMPT)
             .rollBilling(UPDATED_ROLL_BILLING)
-            .emoVersion(UPDATED_EMO_VERSION);
+            .emoVersion(UPDATED_EMO_VERSION)
+            .contactDeskId(UPDATED_CONTACT_DESK_ID)
+            .enableTicketDispatch(UPDATED_ENABLE_TICKET_DISPATCH);
         SiteDTO siteDTO = siteMapper.toDto(updatedSite);
 
         restSiteMockMvc.perform(put("/api/sites")
@@ -1514,6 +1609,8 @@ public class SiteResourceIntTest {
         assertThat(testSite.isTaxExempt()).isEqualTo(UPDATED_TAX_EXEMPT);
         assertThat(testSite.isRollBilling()).isEqualTo(UPDATED_ROLL_BILLING);
         assertThat(testSite.getEmoVersion()).isEqualTo(UPDATED_EMO_VERSION);
+        assertThat(testSite.getContactDeskId()).isEqualTo(UPDATED_CONTACT_DESK_ID);
+        assertThat(testSite.getEnableTicketDispatch()).isEqualTo(UPDATED_ENABLE_TICKET_DISPATCH);
 
         // Validate the Site in Elasticsearch
         verify(mockSiteSearchRepository, times(1)).save(testSite);
@@ -1595,7 +1692,9 @@ public class SiteResourceIntTest {
             .andExpect(jsonPath("$.[*].longitude").value(hasItem(DEFAULT_LONGITUDE)))
             .andExpect(jsonPath("$.[*].taxExempt").value(hasItem(DEFAULT_TAX_EXEMPT.booleanValue())))
             .andExpect(jsonPath("$.[*].rollBilling").value(hasItem(DEFAULT_ROLL_BILLING.booleanValue())))
-            .andExpect(jsonPath("$.[*].emoVersion").value(hasItem(DEFAULT_EMO_VERSION.toString())));
+            .andExpect(jsonPath("$.[*].emoVersion").value(hasItem(DEFAULT_EMO_VERSION.toString())))
+            .andExpect(jsonPath("$.[*].contactDeskId").value(hasItem(DEFAULT_CONTACT_DESK_ID)))
+            .andExpect(jsonPath("$.[*].enableTicketDispatch").value(hasItem(DEFAULT_ENABLE_TICKET_DISPATCH.booleanValue())));
     }
 
     @Test

@@ -185,5 +185,33 @@
         </addColumn>
     </changeSet>
 
+    <changeSet id="BD-2639-1" author="victormedeiros">
+        <addColumn tableName="site">
+            <column name="contact_desk_id" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="BD-2665-1" author="victormedeiros">
+        <addColumn tableName="site">
+            <column name="enable_ticket_dispatch" type="boolean" defaultValueBoolean="false" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="BD-2665-2" author="victormedeiros">
+        <update tableName="site">
+            <column name="enable_ticket_dispatch" valueBoolean="false"></column>
+        </update>
+    </changeSet>
+
+    <changeSet id="BD-2666-1" author="victormedeiros">
+        <addColumn tableName="site">
+            <column name="time_zone_id" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+        </addColumn>
+    </changeSet>
+
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
 </databaseChangeLog>

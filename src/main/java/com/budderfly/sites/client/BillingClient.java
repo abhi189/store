@@ -8,11 +8,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.List;
+
 
 @FeignClient(name = "billing", url = "", fallbackFactory = BillingClientFallbackFactory.class, configuration = BillingClientConfiguration.class)
 public interface BillingClient {
 
-    @RequestMapping(value = "/api/site-accounts/budderflySiteAccountsPageable?page={pageNumber}&size={size}", method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    ResponseEntity<RestResponsePage<SiteAccountDTO>> getSitesAccounts(@PathVariable("pageNumber") Long page, @PathVariable("size")Long size);
+    @RequestMapping(value = "/api/site-accounts/find-new-sites", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    Void findNewSites(List<String> budderflyIds);
 }

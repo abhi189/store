@@ -12,6 +12,5 @@ class BillingClientException extends FeignException {
     BillingClientException(Integer status, String message) {
         super("(" + status.toString() + "): " + message);
         this.status = status;
-        log.info("STATUS: "+status);
     }
 }

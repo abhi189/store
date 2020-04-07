@@ -22,14 +22,18 @@ import com.budderfly.sites.domain.enumeration.BillingType;
 import com.budderfly.sites.domain.enumeration.PaymentType;
 
 import com.budderfly.sites.domain.enumeration.SiteType;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 /**
  * A Site.
  */
 @Entity
 @Table(name = "site")
-@FilterDef(name = "SITE_FILTER", parameters = {@ParamDef(name = "siteIds", type = "string")})
-@Filter(name = "SITE_FILTER", condition = "budderfly_id IN (:siteIds)")
+@FilterDef(name = "SITE_FILTER", parameters = {@ParamDef(name = "siteIds", type = "string")}) // TODO will be removed once BD-2840 is done
+@FilterDef(name = "SITE_OWNERSHIP_FILTER", parameters = {@ParamDef(name = "siteIds", type = "string")})
+@Filter(name = "SITE_FILTER", condition = "budderfly_id IN (:siteIds)") // TODO will be removed once BD-2840 is done
+@Filter(name = "SITE_OWNERSHIP_FILTER", condition = "budderfly_id IN (:siteIds)")
 @Document(indexName = "site")
 public class Site extends AbstractAuditingEntity implements Serializable {
 
@@ -39,6 +43,7 @@ public class Site extends AbstractAuditingEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Field(type = FieldType.Keyword)
     @NotNull
     @Column(name = "budderfly_id", nullable = false)
     private String budderflyId;
@@ -128,6 +133,15 @@ public class Site extends AbstractAuditingEntity implements Serializable {
     @ManyToOne
     @JsonIgnoreProperties("")
     private Site parentSite;
+    
+    @Column(name = "contact_desk_id")
+    private String contactDeskId;
+    
+    @Column(name = "enable_ticket_dispatch")
+    private Boolean enableTicketDispatch = false;
+    
+    @Column(name = "time_zone_id")
+    private String timeZoneId;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -475,6 +489,45 @@ public class Site extends AbstractAuditingEntity implements Serializable {
     public void setParentSite(Site site) {
         this.parentSite = site;
     }
+
+    public String getContactDeskId() {
+        return contactDeskId;
+    }
+
+    public Site contactDeskId(String contactDeskId) {
+        this.contactDeskId = contactDeskId;
+        return this;
+    }
+
+    public void setContactDeskId(String contactDeskId) {
+        this.contactDeskId = contactDeskId;
+    }
+
+    public Boolean getEnableTicketDispatch() {
+        return enableTicketDispatch;
+    }
+
+    public Site enableTicketDispatch(Boolean enableTicketDispatch){
+        this.enableTicketDispatch = enableTicketDispatch;
+        return this;
+    }
+
+    public void setEnableTicketDispatch(Boolean enableTicketDispatch) {
+        this.enableTicketDispatch = enableTicketDispatch;
+    }
+
+    public String getTimeZoneId() {
+        return timeZoneId;
+    }
+
+    public Site timeZoneId(String timeZoneId) {
+        this.timeZoneId = timeZoneId;
+        return this;
+    }
+
+    public void setTimeZoneId(String timeZoneId) {
+        this.timeZoneId = timeZoneId;
+    }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
@@ -526,6 +579,9 @@ public class Site extends AbstractAuditingEntity implements Serializable {
             ", billingContact='" + getBillingContact() + "'" +
             ", siteContact='" + getSiteContact() + "'" +
             ", franchiseContact='" + getFranchiseContact() + "'" +
+            ", contactDeskId='" + getContactDeskId() + "'" +
+            ", enableTicketDispatch='" + getEnableTicketDispatch() + "'" +
+            ", timeZoneId='" + getTimeZoneId() + "'" +
             "}";
     }
 }

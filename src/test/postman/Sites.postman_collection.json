@@ -1,0 +1,634 @@
+{
+	"info": {
+		"_postman_id": "5483ddb4-3d57-44ec-90f5-d70ef301861f",
+		"name": "Sites",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "SyncSites",
+			"item": [
+				{
+					"name": "Sites - Sync",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "4b26462f-a039-48cb-b90f-e8d5d0b0f7ce",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "a32841fb-4300-457f-8a0a-67407183cd2e"
+							},
+							{
+								"key": "Cookie",
+								"value": "XSRF-TOKEN=a32841fb-4300-457f-8a0a-67407183cd2e"
+							}
+						],
+						"url": {
+							"raw": "{{SERVER_URL}}/sites/api/sites/sync",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"path": [
+								"sites",
+								"api",
+								"sites",
+								"sync"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Sites CRUD",
+			"item": [
+				{
+					"name": "Sites - New Site From SiteAccount",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f6bab980-4943-4b7f-9074-40ab320ed67e",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"Created Site Item\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.response.to.have.status(200)",
+									"    pm.expect(jsonData.budderflyId).to.eql(pm.variables.get('budderflyId'));",
+									"    ",
+									"    pm.globals.set(\"budderflyId\", jsonData.budderflyId);",
+									"    pm.globals.set(\"id\", jsonData.id);",
+									"});",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "a32841fb-4300-457f-8a0a-67407183cd2e"
+							},
+							{
+								"key": "Cookie",
+								"value": "XSRF-TOKEN=a32841fb-4300-457f-8a0a-67407183cd2e"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n        \"id\": 111,\n        \"utilityProvider\": \"UnitedIllumCo\",\n        \"accountNumber\": \"01000014252554\",\n        \"rawAccountNumber\": \"01000014252554\",\n        \"billingAccountNumber\": null,\n        \"rawBillingAccountNumber\": null,\n        \"meterNumber\": null,\n        \"customerName\": \"C.A. White\",\n        \"customerCode\": \"1\",\n        \"expectedInvoices\": 24,\n        \"state\": \"ACTIVE\",\n        \"billingStreet\": \"\",\n        \"billingCity\": \"\",\n        \"billingState\": \"\",\n        \"billingZip\": \"\",\n        \"paymentAddressFull\": \"\",\n        \"paymentAddressStreet\": \"\",\n        \"paymentAddressCity\": \"\",\n        \"paymentAddressState\": \"\",\n        \"paymentAddressZip\": \"\",\n        \"siteCode\": \"CAW\",\n        \"customerType\": \"CAW\",\n        \"siteStreet\": \"2 TRAP FALLS RD, HM\",\n        \"siteCity\": \"SHELTON\",\n        \"siteState\": \"CT\",\n        \"siteZip\": \"06484\",\n        \"sitePostalCode\": \"\",\n        \"siteAddress1\": \"\",\n        \"siteAddress2\": \"\",\n        \"siteLongitude\": 0,\n        \"siteLatitude\": 0,\n        \"arrears\": false,\n        \"requestedDate\": \"2019-01-25T18:46:07Z\",\n        \"liveDate\": null,\n        \"createdDate\": \"2017-09-10T21:00:00Z\",\n        \"lastModified\": \"2019-04-29T16:02:01Z\",\n        \"lastModifiedBy\": null,\n        \"type\": null,\n        \"budderflyId\": \"{{budderflyId}}\",\n        \"takeOverDate\": \"2018-09-01\",\n        \"autoImport\": false,\n        \"relatedSiteAccount\": null,\n        \"notes\": null\n    }"
+						},
+						"url": {
+							"raw": "{{SERVER_URL}}/sites/api/sites/from-site-account",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"path": [
+								"sites",
+								"api",
+								"sites",
+								"from-site-account"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET - ByBudderflyId",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "397ec118-f9cb-41e9-88de-37a95a3c8900",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"GET Site\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.response.to.have.status(200)",
+									"    pm.expect(jsonData.budderflyId).to.eql(pm.variables.get('budderflyId'));",
+									"    ",
+									"});",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER_URL}}/sites/api/sites/sites-by-budderfly-id/{{budderflyId}}",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"path": [
+								"sites",
+								"api",
+								"sites",
+								"sites-by-budderfly-id",
+								"{{budderflyId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET - ById",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "31061f64-75ab-4db6-be4a-22809296506d",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"GET Site\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.response.to.have.status(200)",
+									"    pm.expect(jsonData.budderflyId).to.eql(pm.variables.get('budderflyId'));",
+									"    ",
+									"});",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{SERVER_URL}}/sites/api/sites/{{id}}",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"path": [
+								"sites",
+								"api",
+								"sites",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST Create User Site",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e1b6fad0-bf6e-43bb-a3bc-d8d0623a951a",
+								"exec": [
+									"pm.test(\"User Site Created\", function () {",
+									"    pm.response.to.have.status(201)",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "d225e841-e762-420d-9f9b-32d08ae3d7ad",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"userId\": \"3\",\n\t\"budderflyId\": \"OLYM-10\"\n}"
+						},
+						"url": {
+							"raw": "{{SERVER_URL}}/authenticate/api/user-sites",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"path": [
+								"authenticate",
+								"api",
+								"user-sites"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Filtered Sites",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f6bab980-4943-4b7f-9074-40ab320ed67e",
+								"exec": [
+									"pm.test(\"Created Site Item\", function () {",
+									"    var jsonData = pm.response.json();",
+									"    pm.response.to.have.status(200)",
+									"    /*pm.expect(jsonData.data.length).to.not.eql(0);*/",
+									"    pm.expect(jsonData.length).to.be.above(0);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "a32841fb-4300-457f-8a0a-67407183cd2e"
+							},
+							{
+								"key": "Cookie",
+								"value": "XSRF-TOKEN=a32841fb-4300-457f-8a0a-67407183cd2e"
+							}
+						],
+						"url": {
+							"raw": "{{SERVER_URL}}/sites/api/sites/all/filtered",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"path": [
+								"sites",
+								"api",
+								"sites",
+								"all",
+								"filtered"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET site from budderflyId with permission check",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f6bab980-4943-4b7f-9074-40ab320ed67e",
+								"exec": [
+									"pm.test(\"Permission check\", function () {",
+									"    pm.response.to.have.status(403)",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "a32841fb-4300-457f-8a0a-67407183cd2e"
+							},
+							{
+								"key": "Cookie",
+								"value": "XSRF-TOKEN=a32841fb-4300-457f-8a0a-67407183cd2e"
+							}
+						],
+						"url": {
+							"raw": "{{SERVER_URL}}/sites/api/sites/sites-by-budderfly-id-permission/CAWH-2",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"path": [
+								"sites",
+								"api",
+								"sites",
+								"sites-by-budderfly-id-permission",
+								"CAWH-2"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Delete Tests",
+			"item": [
+				{
+					"name": "Delete - Site",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3dbfaa93-2e9a-41fe-974b-f87caeb35471",
+								"type": "text/javascript",
+								"exec": [
+									"pm.test(\"DELETE Site\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "X-XSRF-TOKEN",
+								"value": "a32841fb-4300-457f-8a0a-67407183cd2e"
+							},
+							{
+								"key": "Cookie",
+								"value": "XSRF-TOKEN=a32841fb-4300-457f-8a0a-67407183cd2e"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{SERVER_URL}}/sites/api/sites/{{id}}",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"path": [
+								"sites",
+								"api",
+								"sites",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User Site",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e1b6fad0-bf6e-43bb-a3bc-d8d0623a951a",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "d225e841-e762-420d-9f9b-32d08ae3d7ad",
+								"exec": [
+									"  setTimeout(function(){\r",
+									"          console.log(\"Sleeping for 5 seconds to make sure import finished\");\r",
+									"  }, 5000);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{SERVER_URL}}/authenticate/api/user-sites/by-login-id/3?budderflyId=OLYM-10",
+							"host": [
+								"{{SERVER_URL}}"
+							],
+							"path": [
+								"authenticate",
+								"api",
+								"user-sites",
+								"by-login-id",
+								"3"
+							],
+							"query": [
+								{
+									"key": "budderflyId",
+									"value": "OLYM-10"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Clean up variables",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "d27621ce-84a9-4672-81df-abf97ce7f421",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "b0765f2e-fc5b-4e98-80b2-d9413568160d",
+						"exec": [
+							"pm.environment.unset('xsrf_token');",
+							"pm.environment.unset('access_token');",
+							"pm.variables.set('AUTHENTICATE', true);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{SERVER_URL}}",
+					"host": [
+						"{{SERVER_URL}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "bce7e9b5-7ca9-4760-96f3-3c38ee98d8cb",
+				"type": "text/javascript",
+				"exec": [
+					"console.log('Executing Pre Request Collection', pm.variables.get('SERVER_URL'))",
+					"",
+					"var authenticate = pm.variables.get('AUTHENTICATE');",
+					"",
+					"console.log(\"Authenticate? > \" + authenticate);",
+					"",
+					"if (authenticate) {",
+					"    ",
+					"    const postAuthRequest = {",
+					"      url: pm.variables.get('SERVER_URL')+'/auth/login',",
+					"      method: 'POST',",
+					"      header: 'Content-Type:application/json',",
+					"      body: {",
+					"        mode: 'application/json',",
+					"        raw: JSON.stringify(",
+					"            {",
+					"                \"username\": pm.variables.get('USERNAME'),",
+					"                \"password\": pm.variables.get('PASSWORD')",
+					"            })",
+					"      }",
+					"    };",
+					"    ",
+					"    pm.sendRequest(postAuthRequest, function (err, res) {",
+					"        if (err === null) {",
+					"            var responseJson = res.json();",
+					"            console.log('Saving the Access Token:', responseJson.access_token);",
+					"            pm.environment.set('access_token', responseJson.access_token);",
+					"            ",
+					"            res.headers.all()",
+					"            .filter(header => { return header.key === 'Set-Cookie';})",
+					"            .forEach(header => {",
+					"                if (header.value.includes('XSRF-TOKEN')) {",
+					"                    // Expect a string like \"XSRF-TOKEN=3dcefa44-b265-417a-a90e-9a71cf34a398; path=/\"",
+					"                    // And want to extract the hash token \"3dcefa44-b265-417a-a90e-9a71cf34a398\"",
+					"                    var xsrf_token = header.value.split('XSRF-TOKEN=')[1];",
+					"                    xsrf_token = xsrf_token.split('; path')[0];",
+					"                    ",
+					"                    // Inserts a header name and header value as given to the list of headers",
+					"                    // for the current request (if the header does not exist, ",
+					"                    // otherwise the already existing header is updated to the new value).",
+					"                    pm.request.headers.add({key: 'X-XSRF-TOKEN', value: xsrf_token }); ",
+					"                }",
+					"            })",
+					"            ",
+					"",
+					"        } else {",
+					"            console.log('Error on GET Access Token' + err);",
+					"        }",
+					"        pm.variables.set('AUTHENTICATE', false);",
+					"    });",
+					"} else {",
+					"    // Inserts a header name and header value as given to the list of headers",
+					"    // for the current request (if the header does not exist, ",
+					"    // otherwise the already existing header is updated to the new value).",
+					"    var xsrf_token = pm.environment.get('xsrf_token');",
+					"    pm.request.headers.add({key: 'X-XSRF-TOKEN', value: xsrf_token }); ",
+					"}"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "46e8d068-7aba-4f82-81bb-e6145a277c4f",
+				"type": "text/javascript",
+				"exec": [
+					"pm.test('Verify Cookie and Token', function(){",
+					"    var cookie = pm.cookies.get('XSRF-TOKEN');",
+					"    pm.environment.set('xsrf_token', cookie);",
+					"});"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "6e6816bc-34d8-4fdb-bbd9-3978a6c5b21d",
+			"key": "host",
+			"value": "https://qa1ms.budderfly.com",
+			"type": "string"
+		},
+		{
+			"id": "5038b3ae-1c46-49b2-ae35-94c005dda6ca",
+			"key": "budderflyId",
+			"value": "SUBWTEST-2019",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}

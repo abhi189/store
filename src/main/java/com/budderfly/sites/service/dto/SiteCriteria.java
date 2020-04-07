@@ -110,7 +110,13 @@ public class SiteCriteria implements Serializable {
     private LongFilter parentSiteId;
 
     private LongFilter contactId;
+    
+    private StringFilter contactDeskId;
 
+    private BooleanFilter enableTicketDispatch;
+    
+    private StringFilter timeZoneId;
+    
     public LongFilter getId() {
         return id;
     }
@@ -367,6 +373,29 @@ public class SiteCriteria implements Serializable {
         this.lastModifiedDate = lastModifiedDate;
     }
 
+    public StringFilter getContactDeskId() {
+        return contactDeskId;
+    }
+
+    public void setContactDeskId(StringFilter contactDeskId) {
+        this.contactDeskId = contactDeskId;
+    }
+
+    public BooleanFilter getEnableTicketDispatch() {
+        return enableTicketDispatch;
+    }
+
+    public void setEnableTicketDispatch(BooleanFilter enableTicketDispatch) {
+        this.enableTicketDispatch = enableTicketDispatch;
+    }
+
+    public StringFilter getTimeZoneId() {
+        return timeZoneId;
+    }
+
+    public void setTimeZoneId(StringFilter timeZoneId) {
+        this.timeZoneId = timeZoneId;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -405,6 +434,9 @@ public class SiteCriteria implements Serializable {
             Objects.equals(siteContact, that.siteContact) &&
             Objects.equals(franchiseContact, that.franchiseContact) &&
             Objects.equals(parentSiteId, that.parentSiteId) &&
+            Objects.equals(contactDeskId, that.contactDeskId) &&
+            Objects.equals(enableTicketDispatch, that.enableTicketDispatch) &&
+            Objects.equals(timeZoneId, that.timeZoneId) &&
             Objects.equals(contactId, that.contactId);
     }
 
@@ -438,7 +470,10 @@ public class SiteCriteria implements Serializable {
         siteContact,
         franchiseContact,
         parentSiteId,
-        contactId
+        contactId,
+        contactDeskId,
+        enableTicketDispatch,
+        timeZoneId
         );
     }
 
@@ -474,6 +509,9 @@ public class SiteCriteria implements Serializable {
                 (franchiseContact != null ? "franchiseContact=" + franchiseContact + ", " : "") +
                 (parentSiteId != null ? "parentSiteId=" + parentSiteId + ", " : "") +
                 (contactId != null ? "contactId=" + contactId + ", " : "") +
+                (contactDeskId != null ? "contactDeskId=" + contactDeskId + ", " : "") +
+                (enableTicketDispatch != null ? "enableTicketDispatch=" + enableTicketDispatch + ", " : "") +
+                (timeZoneId != null ? "timeZoneId=" + timeZoneId + ", " : "") +
             "}";
     }
 

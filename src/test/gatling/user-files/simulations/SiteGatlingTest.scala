@@ -109,6 +109,9 @@ class SiteGatlingTest extends Simulation {
                 , "billingContact":"SAMPLE_TEXT"
                 , "siteContact":"SAMPLE_TEXT"
                 , "franchiseContact":"SAMPLE_TEXT"
+                , "contactDeskId":"SAMPLE_TEXT"
+                , "enableTicketDispatch":null
+                , "timeZoneId":"SAMPLE_TEXT"
                 }""")).asJSON
             .check(status.is(201))
             .check(headerRegex("Location", "(.*)").saveAs("new_site_url"))).exitHereIfFailed

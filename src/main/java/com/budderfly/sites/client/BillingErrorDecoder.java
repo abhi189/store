@@ -24,16 +24,16 @@ public class BillingErrorDecoder implements ErrorDecoder {
         try {
             responseBody = new String(Util.toByteArray(response.body().asInputStream()));
         } catch (IOException e) {
-            log.error(e.getMessage());
+            log.warn(e.getMessage());
             // ignore
         }
 
         if (response.status() >= 400 && response.status() <= 499) {
-            log.error("STATUS: "+response.status());
+            log.warn("STATUS: "+response.status());
             return new BillingClientException(response.status(), response.reason() + responseBody);
         }
         if (response.status() >= 500 && response.status() <= 599) {
-            log.error("STATUS: "+response.status());
+            log.warn("STATUS: "+response.status());
             return new BillingServerException(response.status(), response.reason() + responseBody);
         }
         return defaultErrorDecoder.decode(methodKey, response);

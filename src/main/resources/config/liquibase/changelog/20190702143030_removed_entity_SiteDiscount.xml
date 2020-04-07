@@ -10,7 +10,7 @@
         Removed the entity SiteDiscount. It will be moved to Invoice microservice
     -->
 
-    <changeSet id="BD-1606-1" author="victormedeiros">
+    <changeSet id="BD-1606-1" author="victormedeiros" failOnError="false">
         <dropForeignKeyConstraint baseTableName="site" constraintName="fk_site_site_discount_id"></dropForeignKeyConstraint>
     </changeSet>
 

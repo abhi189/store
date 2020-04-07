@@ -37,7 +37,7 @@ public class BillingClientFallbackFactory implements BillingClient, FallbackFact
     }
 
     @Override
-    public ResponseEntity<RestResponsePage<SiteAccountDTO>> getSitesAccounts(Long page, Long size) {
+    public Void findNewSites(List<String> budderflyIds) {
         log.warn("getSitesAccounts: problems detected while interacting with the Billing service.");
         return null;
     }

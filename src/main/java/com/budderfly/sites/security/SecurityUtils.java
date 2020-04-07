@@ -61,4 +61,12 @@ public final class SecurityUtils {
                 .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(authority)))
             .orElse(false);
     }
+
+    public static boolean isCurrentUserOnlyRole(String authority) {
+        SecurityContext securityContext = SecurityContextHolder.getContext();
+        return Optional.ofNullable(securityContext.getAuthentication())
+            .map(authentication -> authentication.getAuthorities().stream()
+                .allMatch(grantedAuthority -> grantedAuthority.getAuthority().equals(authority)))
+            .orElse(false);
+    }
 }

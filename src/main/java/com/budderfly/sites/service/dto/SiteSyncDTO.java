@@ -20,6 +20,20 @@ public class SiteSyncDTO implements Serializable {
 
     private String franchiseEmail;
 
+    private String contactDeskId;
+
+    private String latitude;
+
+    private String longitude;
+
+    private String address;
+
+    private String city;
+
+    private String state;
+
+    private String zipCode;
+
     public SiteSyncDTO() {
     }
 
@@ -45,6 +59,22 @@ public class SiteSyncDTO implements Serializable {
 
     public void setFranchiseEmail(String franchiseEmail) {
         this.franchiseEmail = franchiseEmail;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
     }
 
     public SiteSyncDTO(String budderflyId) {
@@ -73,6 +103,45 @@ public class SiteSyncDTO implements Serializable {
 
     public void setBudderflyId(String budderflyId) {
         this.budderflyId = budderflyId;
+    }
+    public String getContactDeskId() {
+        return contactDeskId;
+    }
+
+    public void setContactDeskId(String contactDeskId) {
+        this.contactDeskId = contactDeskId;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getZipCode() {
+        return zipCode;
+    }
+
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
     }
 
     @Override
@@ -105,6 +174,12 @@ public class SiteSyncDTO implements Serializable {
             ", contactEmail='" + getContactEmail() + '\'' +
             ", franchiseEmail='" + getFranchiseEmail() + '\'' +
             ", billingEmail='" + getBillingEmail() + '\'' +
+            ", contactDeskId='" + getContactDeskId() + '\'' +
+            ", latitude='" + getLatitude() + '\'' +
+            ", longitude='" + getLongitude() + '\'' +
+            ", city='" + getCity() + '\'' +
+            ", state='" + getState() + '\'' +
+            ", zipCode='" + getZipCode() + '\'' +
             '}';
     }
 }

@@ -26,11 +26,31 @@
 
     </changeSet>
 
-    <changeSet id="BD-1453-2" author="victormedeiros">
+    <changeSet id="BD-1453-2" author="victormedeiros" failOnError="false">
         <addForeignKeyConstraint baseColumnNames="site_discount_id"
                                  baseTableName="site"
                                  constraintName="fk_site_site_discount_id"
                                  referencedColumnNames="id"
                                  referencedTableName="site_discount"/>
     </changeSet>
+
+    <changeSet id="BD-1453-2-fixed" author="scottpolis">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="site" columnName="site_discount_id"></columnExists>
+        </preConditions>
+        <addForeignKeyConstraint baseColumnNames="site_discount_id"
+                                 baseTableName="site"
+                                 constraintName="fk_site_site_discount_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="site_discount"/>
+    </changeSet>
+
+
+    <changeSet id="BD-1606-1-fixed" author="scottpolis">
+        <preConditions onFail="MARK_RAN">
+           <foreignKeyConstraintExists foreignKeyName="fk_site_site_discount_id" foreignKeyTableName="site"></foreignKeyConstraintExists>
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="site" constraintName="fk_site_site_discount_id"></dropForeignKeyConstraint>
+    </changeSet>
+
 </databaseChangeLog>

@@ -2,6 +2,8 @@ package com.budderfly.sites.repository;
 
 import com.budderfly.sites.domain.Site;
 import com.budderfly.sites.domain.enumeration.SiteStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 
@@ -26,4 +28,8 @@ public interface SiteRepository extends JpaRepository<Site, Long>, JpaSpecificat
     List<Site> findByStatus(SiteStatus siteStatus);
 
     List<Site> findBySiteContact(String email);
+
+    Page<Site> findByBudderflyIdIn(List<String> budderflyIds, Pageable pageable);
+
+    Page<Site> findByBudderflyIdNotIn(List<String> budderflyIds, Pageable pageable);
 }

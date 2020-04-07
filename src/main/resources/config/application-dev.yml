@@ -26,6 +26,19 @@ eureka:
         service-url:
             defaultZone: http://admin:${jhipster.registry.password}@localhost:8761/eureka/
 
+# ribbonTimeout = (ribbonReadTimeout + ribbonConnectTimeout) * (maxAutoRetries + 1) * (maxAutoRetriesNextServer + 1);
+# ej  ribbonTimeout = (30000 + 30000) * (0 + 1) * (1 + 1) = 120000
+ribbon:
+    ReadTimeout: 3000
+    ConnectTimeout: 1500
+hystrix:
+    command:
+        default:
+            execution:
+                isolation:
+                    thread:
+                        timeoutInMilliseconds: 9000 # Fuse service request timeout
+
 spring:
     profiles:
         active: dev
@@ -68,10 +81,8 @@ spring:
             hibernate.cache.use_minimal_puts: true
             hibernate.cache.hazelcast.use_lite_member: true
     data:
-        elasticsearch:
-            properties:
-                path:
-                    home: target/elasticsearch
+        jest:
+            uri: http://localhost:9200
     liquibase:
         contexts: dev
     mail:

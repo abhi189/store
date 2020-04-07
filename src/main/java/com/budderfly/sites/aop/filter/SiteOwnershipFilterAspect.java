@@ -1,6 +1,5 @@
 package com.budderfly.sites.aop.filter;
 
-import com.budderfly.sites.security.AuthoritiesConstants;
 import com.budderfly.sites.security.SecurityUtils;
 import com.budderfly.sites.service.SiteService;
 import com.netflix.hystrix.exception.HystrixRuntimeException;
@@ -22,18 +21,17 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Aspect for logging execution of service and repository Spring components.
+ * Aspect for filtering site data based on ownership
  */
 @Aspect
 @Component
-@Deprecated // Will be removed once BD-2840 is done, use SiteOwnershipFilterAspect Instead
-public class SiteFilterAspect {
-    private final Logger log = LoggerFactory.getLogger(SiteFilterAspect.class);
+public class SiteOwnershipFilterAspect {
+    private final Logger log = LoggerFactory.getLogger(SiteOwnershipFilterAspect.class);
     private final SiteService siteService;
     @PersistenceContext
     public EntityManager entityManager;
 
-    public SiteFilterAspect(SiteService siteService) {
+    public SiteOwnershipFilterAspect(SiteService siteService) {
         this.siteService = siteService;
     }
 
@@ -46,10 +44,10 @@ public class SiteFilterAspect {
     }
 
     /**
-     * Pointcut that matches all methods with @SiteFilter annotation
+     * Pointcut that matches all methods with @SiteOwnershipFilter annotation
      */
-    @Pointcut("@annotation(com.budderfly.sites.repository.SiteFilter)")
-    public void siteFilterAnnotation() {
+    @Pointcut("@annotation(com.budderfly.sites.repository.SiteOwnershipFilter)")
+    public void siteOwnershipFilterAnnotation() {
         // Method is empty as this is just a Pointcut, the implementations are in the advices.
     }
 
@@ -58,40 +56,37 @@ public class SiteFilterAspect {
      *
      * @param joinPoint join point for advice
      */
-    @Before("allServicesPointcut() && siteFilterAnnotation()")
-    public void applySitesFilter(JoinPoint joinPoint) {
-        log.debug("Enter applySitesFilter on jointPoint {}", joinPoint.toLongString());
-        if (SecurityUtils.isCurrentUserOnlyRole(AuthoritiesConstants.PORTAL)) {
+    @Before("allServicesPointcut() && siteOwnershipFilterAnnotation()")
+    public void applySitesOwnershipFilter(JoinPoint joinPoint) {
+        log.debug("Enter applySitesOwnershipFilter on jointPoint {}", joinPoint.toLongString());
             final Optional<String> login = SecurityUtils.getCurrentUserLogin();
-            log.debug("Applying site filter as user {} is part of the 'ROLE_PORTAL' role", login);
+            log.debug("Applying site ownership filter for user {}", login);
             if (login.isPresent()) {
                 List<String> budderflyIDs = new ArrayList<>();
 
                 try {
                     budderflyIDs = siteService.getShopsOwnedByUser(login.get());
                 } catch (HystrixRuntimeException ex) {
-                    log.debug("Failed to get shops in SITE FILTER " + ex.getCause().getMessage());
+                    log.debug("Failed to get shops in SITE OWNERSHIP FILTER " + ex.getCause().getMessage());
                 } catch (Exception exc) {
-                    log.debug("Failed to get shops in SITE FILTER " + exc.getMessage());
+                    log.debug("Failed to get shops in SITE OWNERSHIP FILTER " + exc.getMessage());
                 }
 
                 if (budderflyIDs.isEmpty()) {
                     budderflyIDs.add("''"); //Ugly but needed as an empty IN () command is not supported
                 }
-                Filter filter = entityManager.unwrap(Session.class).enableFilter("SITE_FILTER");
+                Filter filter = entityManager.unwrap(Session.class).enableFilter("SITE_OWNERSHIP_FILTER");
                 filter.setParameterList("siteIds", budderflyIDs);
 
                 try {
                     filter.validate();
                 } catch (HibernateException e) {
-                    log.debug("SITE FILTER validation failed " + e.getCause().getMessage());
+                    log.debug("SITE OWNERSHIP FILTER validation failed " + e.getCause().getMessage());
                 }
 
             } else {
-                log.warn("Cant get site associated to user {}.", login);
+                log.warn("No user is signed in for SITE OWNERSHIP FILTER"); // should never happen
             }
-        } else {
-            log.debug("Leaving site filter disabled as user is not part of the 'ROLE_PORTAL' role");
-        }
     }
+
 }
